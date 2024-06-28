@@ -1,0 +1,143 @@
+{% extends 'base_infirmier.html' %}
+
+{% block title %}Liste des Patients{% endblock %}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+
+
+
+
+{% block content %}
+    <div class="container">
+        <h2>Liste des Patients</h2>
+        {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <table id="patientsTable" class="table">
+            <thead>
+                <tr>
+                    <th>code</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Date de Naissance</th>
+                    <th>telephone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.code_patient |upper}}</td>
+                        <td>{{ patient.nom |upper}}</td>
+                        <td>{{ patient.prenom|lower }}</td>
+                        <td>{{ patient.date_naissance }}</td>
+                        <td>{{ patient.telephone }}</td>
+                        <td>
+                            <a href="{% url 'voir_carnet' patient.id %}">Voir Carnet</a> | 
+                            <a href="{% url 'modifier_carnet' patient.id %}">Modifier Carnet</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    {% block extra_css %}
+    <!-- Styles personnalisés pour DataTables -->
+    <style>
+        /* Personnalisation de la barre de recherche */
+        .dataTables_wrapper .dataTables_filter {
+            width: auto;
+            margin-right: 10px;
+            float: right; /* Aligner la barre de recherche à droite */
+            
+        }
+
+        .dataTables_wrapper .dataTables_filter label {
+            display: inline-block; /* Permet de régler la marge */
+            margin-right: 5px; /* Marge entre le label et l'input */
+            margin-bottom: 20px;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            width: 150px;
+            padding: 6px;
+            font-size: 14px;
+            display: inline-block; /* Permet d'afficher les éléments sur la même ligne */
+        }
+
+
+        /* Personnalisation des boutons de pagination */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 5px 10px;
+    margin-left: 3px;
+    font-size: 14px;
+    border-radius: 5px;
+    white-space: nowrap; /* Empêche le texte de revenir à la ligne */
+    display: inline-block;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #0a141f;
+    color: #fff;
+    padding: 5px 10px; /* Taille de padding uniforme */
+    margin-left: 3px; /* Marge à gauche uniforme */
+    font-size: 14px; /* Taille de police uniforme */
+    border-radius: 5px; /* Coins arrondis uniformes */
+    display: inline-block;
+}
+    </style>
+{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>   
+<script>
+     
+        $(document).ready(function() {
+            $('#patientsTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "Aucune donnée disponible dans le tableau",
+                    "info": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                    "infoEmpty": "Affichage de 0 à 0 sur 0 entrée",
+                    "infoFiltered": "(filtré à partir de _MAX_ entrées au total)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Afficher _MENU_ entrées",
+                    "loadingRecords": "Chargement...",
+                    "processing": "En traitement...",
+                    "search": "Rechercher :",
+                    "zeroRecords": "Aucun enregistrement correspondant trouvé",
+                    "paginate": {
+                        "first": "Premier",
+                        "last": "Dernier",
+                        "next": "Suivant",
+                        "previous": "Précédent"
+                    },
+                    "aria": {
+                        "sortAscending": ": activer pour trier la colonne par ordre croissant",
+                        "sortDescending": ": activer pour trier la colonne par ordre décroissant"
+                    }
+                },
+                   "pagingType": "full_numbers" 
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base_medecin.html' %}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+{% block content %}
+
+
+<h3>nouvelle Consultation pour {{ patient.nom }} {{ patient.prenom }}</h3>
+{% if alert %}
+    <div style="background-color: lightgreen; padding: 10px; text-align: center;">{{alert}}</div>
+{% endif %}
+<form method="post" class="bg-danger">
+    {% csrf_token %}
+    {{ consultation_form.as_p }}
+    
+    <h3>Diagnostics</h3>
+    <div id="diagnostics">
+        <div class="diagnostic-form">
+            <div style="width: 100%;">
+                <label for="">Maladie</label><br>
+                {{ diagnostic_formset.maladie }}
+            </div>
+        </div>
+    </div>
+    
+    <h3>Traitements</h3>
+    <div id="traitements">
+        <div class="traitement-form" style="border: 1px solid #333; padding: 10px; margin-bottom: 5px;">
+            {{ traitement_formset.as_p }}
+        </div>
+    </div>
+    <button type="button" id="add-traitement">Ajouter un traitement</button><br><br>
+    
+    <button type="submit">Enregistrer</button>
+</form>
+
+<div id="prototype" style="display: none;">
+    <div class="traitement-form" style="border: 1px solid #333; padding: 10px; margin-bottom: 5px;">
+        {{ traitement_formset.as_p }}
+    </div>
+</div>
+
+<script>
+    document.getElementById('add-traitement').addEventListener('click', function() {
+        let parent = document.querySelector('#traitements');
+        let prototype = document.querySelector('#prototype .traitement-form');
+        
+        let nouveauElement = prototype.cloneNode(true);
+        
+        var bouton = document.createElement('button');
+        bouton.textContent = 'Supprimer';
+        bouton.className = 'supprimer';
+        bouton.style.backgroundColor = "red";
+        bouton.style.color = "#FFF";
+
+        bouton.onclick = function() {
+            parent.removeChild(nouveauElement);
+        };
+
+        nouveauElement.appendChild(bouton);
+        parent.appendChild(nouveauElement);
+    });
+</script>
+
+
+
+
+<script>
+    $(function() {
+        $('#id_date_debut, #id_date_fin').datepicker({
+            dateFormat: 'yy-mm-dd',
+            minDate: 0  // Permet seulement les dates à partir d'aujourd'hui
+        });
+    });
+</script>
+{% endblock %}

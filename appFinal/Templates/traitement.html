@@ -1,0 +1,12 @@
+{% extends 'base_medecin.html' %}
+
+{% block title %}Ajouter un Traitement{% endblock %}
+
+{% block content %}
+    <h2>Ajouter un Traitement pour le diagnostic de {{ diagnostic.consultation.patient }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Enregistrer</button>
+    </form>
+{% endblock %}

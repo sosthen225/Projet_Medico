@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Tableau de Bord Infirmier{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/infirmier_dashboard.css' %}">
+    <script src= "{% static 'js/jquery-1.11.3.min.js' %}" ></script>
+    <script src= "{% static 'js/jquery-3.7.1.min.js' %}" ></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/infirmier_dashboard.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+</head>
+<body>
+    <div class = container>
+    <header>
+        <h1>{% block header %}GESTIONNAIRE DES PATIENTS{% endblock %}</h1>
+    </header>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    
+    <nav>
+        <a href="{% url 'infirmier_dashboard' %}">Tableau de Bord</a><br>
+        <a href="{% url 'nouveau_patient' %}">Nouveau Patient</a><br>
+        <a href="{% url 'nouveau_carnet' %}">Nouveau Carnet</a><br>
+        <a href="{% url 'liste_patients' %}">Liste des Patients</a><br><br><br><br><br><br><br><br><br>
+        <a href="{% url 'logout' %}">Se Déconnecter</a>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main></div>
+</body>
+</html>
