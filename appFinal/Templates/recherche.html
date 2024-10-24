@@ -15,7 +15,8 @@
         <p>sexe: {{ patient.genre }}</p>
         <p>Groupe sanguin: {{ patient.groupe_sanguin }}</p>
         <p>adresse: {{ patient.adresse }}</p>
-        <p>telephone: {{ patient.telephone }}</p><br>
+        <p>telephone: {{ patient.telephone }}</p><br><br>
+        <a href="{% url 'voir_carnet' patient.id %}">Voir Carnet complet</a>
     </div>
     
     
@@ -62,61 +63,10 @@
         </tr>
        
     </table><br>
-    <a href="{% url 'voir_carnet' patient.id %}">Voir Carnet complet</a>
+   
 
-    <h2 class="diagno">Anciens diagnostics et traitements</h2>
-    <table class="consul" border="1">
-        <thead>
-          <tr>
-            <th>Date de Consultation</th>
-            <th>Maladie</th>
-            <th>medicaments</th>
-            <th>durée du traitement</th>
-            <th>Médecin</th>
-            <th>specialité</th>
-          </tr>
-        </thead>
-        <tbody>
-            
-          {% for consultation in consultations.all %}
-          <tr>
-            <td>{{ consultation.date_consultation }}</td>
-            <td>
-             {% for diagnostic in consultation.diagnostic_set.all %}
-                {{ diagnostic.maladie }}
-                {% endfor %}
-              </td>
-          
-            <td>
-             {% for diagnostic in consultation.diagnostic_set.all %}
-             {% for traitement in diagnostic.traitement_set.all %}
-             {{ traitement.medicament }}
-                  {% endfor %}
-                  {% endfor %}
-            </td>
-            <td>
-                {% for diagnostic in consultation.diagnostic_set.all %}
-                {% for traitement in diagnostic.traitement_set.all %}
-             du  {{traitement.date_fin}}  au  {{traitement.date_debut}} 
-                {% endfor %}
-                {% endfor %}                
-              </td>
-
-              <td>{{ consultation.medecin.nom }} {{ consultation.medecin.prenom }}</td>
-              <td>{{ consultation.medecin.specialite }}</td>
-            
-          </tr>
-          {% empty %}
-
-          <tr>
-            <td colspan="3">Aucune consultation trouvée.</td>
-          </tr>
-          
-          {% endfor %}
-        </tbody>
-      </table>
+    
       
-      <a class="lien" href=" {% url 'nouveau_diagnostic' consultations.id %}"> nouveau diagnostic et traitement</a>
 
     
      

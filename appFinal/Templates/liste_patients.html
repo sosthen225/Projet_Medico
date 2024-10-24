@@ -26,6 +26,9 @@
                     <th>Nom</th>
                     <th>Prénom</th>
                     <th>Date de Naissance</th>
+                    <th>genre</th>
+                    <th>groupe sanguin</th>
+                    <th>commune</th>
                     <th>telephone</th>
                     <th>Actions</th>
                 </tr>
@@ -37,10 +40,14 @@
                         <td>{{ patient.nom |upper}}</td>
                         <td>{{ patient.prenom|lower }}</td>
                         <td>{{ patient.date_naissance }}</td>
+                        <td>{{ patient.genre }}</td>
+                        <td>{{ patient.groupe_sanguin }}</td>
+                        <td>{{ patient.adresse }}</td>
                         <td>{{ patient.telephone }}</td>
                         <td>
-                            <a href="{% url 'voir_carnet' patient.id %}">Voir Carnet</a> | 
-                            <a href="{% url 'modifier_carnet' patient.id %}">Modifier Carnet</a>
+                            <a href="{% url 'ajouter_constantes' patient.id %}" class="btn btn-secondary">Ajouter nouvelles constantes</a>
+                            <a href="{% url 'voir_carnet' patient.id %}" class="btn btn-secondary">Voir Carnet</a> | 
+                            
                         </td>
                     </tr>
                 {% endfor %}
@@ -48,7 +55,7 @@
         </table>
     </div>
 
-
+ 
 
     {% block extra_css %}
     <!-- Styles personnalisés pour DataTables -->

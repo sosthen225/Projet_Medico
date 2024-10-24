@@ -1,0 +1,156 @@
+{% extends 'base_infirmier.html' %}
+
+{% block title %} consultations du jour{% endblock %}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+
+{% block content %}
+  <h2>consultations du jour</h2>
+  <div class="container">
+  <table id="statutTable" class="table">
+    <thead>
+      <tr>
+        <th>code</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>date de naissance</th>
+        <th>sexe</th>
+        <th>commune</th>
+        <th>numero de telephone</th>
+        <th>Medecin</th>
+       <th>Statut de la consultation</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for consultation in consultations %}
+        <tr>
+          <td>{{ consultation.patient.code_patient |upper}}</td>
+          <td>{{ consultation.patient.nom |upper}}</td>
+          <td>{{ consultation.patient.prenom  }}</td>
+          <td>{{ consultation.patient.date_naissance }}</td>
+          <td>{{ consultation.patient.genre }}</td>
+          <td>{{ consultation.patient.adresse }}</td>
+          <td>{{ consultation.patient.telephone }}</td>
+          <td>{{ consultation.medecin }}</td>
+          <td class="{% if consultation.statut == 'En attente' %}statut-en-attente{% elif consultation.statut == 'En cours' %}statut-en-cours{% elif consultation.statut == 'Terminée' %}statut-terminee{% elif consultation.statut == 'Annulée' %}statut-annulee{% endif %}">
+            {{consultation.statut}}
+            
+          </td>
+        </tr>
+        {% empty %}
+
+          <tr>
+            <td colspan="8">Aucune consultation trouvée.</td>
+          </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+</div>
+{% block extra_css %}
+<!-- Styles personnalisés pour DataTables -->
+<style>
+  /* Personnalisation de la barre de recherche */
+  .dataTables_wrapper .dataTables_filter {
+      width: auto;
+      margin-right: 10px;
+      float: right; /* Aligner la barre de recherche à droite */
+      
+  }
+
+  .dataTables_wrapper .dataTables_filter label {
+      display: inline-block; /* Permet de régler la marge */
+      margin-right: 5px; /* Marge entre le label et l'input */
+      margin-bottom: 20px;
+  }
+
+  .dataTables_wrapper .dataTables_filter input {
+      width: 150px;
+      padding: 6px;
+      font-size: 14px;
+      display: inline-block; /* Permet d'afficher les éléments sur la même ligne */
+  }
+
+
+  /* Personnalisation des boutons de pagination */
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+padding: 5px 10px;
+margin-left: 3px;
+font-size: 14px;
+border-radius: 5px;
+white-space: nowrap; /* Empêche le texte de revenir à la ligne */
+display: inline-block;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+background-color: #0a141f;
+color: #fff;
+padding: 5px 10px; /* Taille de padding uniforme */
+margin-left: 3px; /* Marge à gauche uniforme */
+font-size: 14px; /* Taille de police uniforme */
+border-radius: 5px; /* Coins arrondis uniformes */
+display: inline-block;
+}
+
+
+.statut-en-attente {
+            color: orange;  /* Exemple de style pour le statut "En attente" */
+        }
+        .statut-en-cours {
+            color: blue;  /* Exemple de style pour le statut "En cours" */
+        }
+        .statut-terminee {
+            color: green;  /* Exemple de style pour le statut "Terminée" */
+        }
+        .statut-annulee {
+            color: red;  /* Exemple de style pour le statut "Annulée" */
+        }
+</style>
+
+{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>   
+<script>
+
+  $(document).ready(function() {
+      $('#statutTable').DataTable({
+          "paging": true,
+          "lengthChange": true,
+          "searching": true,
+          "ordering": false,
+          "info": true,
+          "autoWidth": false,
+          "responsive": true,
+          "language": {
+              "decimal": "",
+              "emptyTable": "Aucune donnée disponible dans le tableau",
+              "info": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+              "infoEmpty": "Affichage de 0 à 0 sur 0 entrée",
+              "infoFiltered": "(filtré à partir de _MAX_ entrées au total)",
+              "infoPostFix": "",
+              "thousands": ",",
+              "lengthMenu": "Afficher _MENU_ entrées",
+              "loadingRecords": "Chargement...",
+              "processing": "En traitement...",
+              "search": "Rechercher :",
+              "zeroRecords": "Aucun enregistrement correspondant trouvé",
+              "paginate": {
+                  "first": "Premier",
+                  "last": "Dernier",
+                  "next": "Suivant",
+                  "previous": "Précédent"
+              },
+              "aria": {
+                  "sortAscending": ": activer pour trier la colonne par ordre croissant",
+                  "sortDescending": ": activer pour trier la colonne par ordre décroissant"
+              }
+          },
+             "pagingType": "full_numbers" 
+      });
+  });
+</script>
+
+{% endblock %}

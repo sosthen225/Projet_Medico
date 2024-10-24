@@ -1,0 +1,49 @@
+{% extends 'base_infirmier.html' %}
+
+{% block title %} attribution{% endblock %}
+
+{% block header %} attribution consultation {% endblock %}
+
+{% block content %}
+<style>
+    #titre{
+        text-align: center;
+    }
+    
+    form{
+        width: 100%;
+        margin: 0 20px 0 20px;
+        display: grid;
+        grid-template-columns: 2fr 2fr;
+        justify-content: center;
+    }
+    form div select{
+        width: 90%;
+    }
+    #btnAttribuer{
+        margin-top: 20px;
+    }
+</style>
+    <div id="titre">
+        <h1>Attribuer la consultation à un Médecin</h1>
+    </div>
+    
+    <section id="attibuer_medecin">
+        <form action="{% url 'attribuer_consultation' %}" method="post" class="form_attribution">
+            {% csrf_token %}
+            <input type="text" name="patient" hidden="hidden" value="{{patient.id}}">
+            <input type="text" name="constante" hidden="hidden" value="{{constantes.id}}">
+            <div>
+                <label for="">specialité</label><br>
+                {{ form.specialite }} 
+            </div>
+            <div>
+                <label for="">Medecin</label><br>
+                {{ form.medecin }} 
+            </div>
+            <button type="submit" id="btnAttribuer" hidden="hidden">Attribuer</button> 
+            
+        </form>
+    </section>
+    
+{% endblock %}

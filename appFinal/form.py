@@ -2,7 +2,7 @@ import datetime
 import uuid
 from django import forms
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
-from .models import CHOIX_SPECIALITES,genre, Carnet, Consultation, Diagnostic, Patient, Traitement, User,Medecin, Infirmier
+from .models import  Constantes, Medicament, Symptome,genre, Carnet,Specialite, Consultation, Diagnostic, Patient, Traitement, User,Medecin, Infirmier
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
@@ -11,11 +11,19 @@ from appFinal import models
 
 
 
+class ConsultationForm(forms.Form):
+    specialite = forms.ModelChoiceField(queryset=Specialite.objects.all(), label="Spécialité")
+    medecin = forms.ModelChoiceField(queryset=Medecin.objects.none(), label="Médecin")
+
+    class Media:
+        js = ('js/consult.js',)  # Inclure votre fichier JS ici
+
+
 class MedecinSignUpForm(UserCreationForm):
     nom = forms.CharField(max_length=100)
     prenom = forms.CharField(max_length=100)
     genre = forms.ChoiceField(choices= genre)
-    specialite = forms.ChoiceField(choices=CHOIX_SPECIALITES)
+    specialite = forms.ModelChoiceField(queryset=Specialite.objects.all())
     telephone = forms.CharField(max_length=10)
 
     class Meta:
@@ -145,7 +153,7 @@ class PatientForm(forms.ModelForm):
 
     class Meta:
         model = Patient
-        fields = ["nom","prenom","date_naissance","genre","adresse","telephone"]
+        fields = ["nom","prenom","date_naissance","genre", 'groupe_sanguin',"adresse","telephone"]
         exclude = ['code_patient']  # Exclure le champ non éditable
         
 
@@ -153,7 +161,7 @@ class PatientForm(forms.ModelForm):
 
 
 
-class TemperatureField(forms.DecimalField):
+class TemperatureField(forms.FloatField):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.widget.attrs['placeholder'] = '°C'
@@ -183,16 +191,16 @@ OUI_NON_CHOICES = [
     ]
 
 fumeur = forms.ChoiceField(choices=OUI_NON_CHOICES, widget=forms.Select)
-boit_alcool = forms.ChoiceField(choices=OUI_NON_CHOICES, widget=forms.Select)
+alcool = forms.ChoiceField(choices=OUI_NON_CHOICES, widget=forms.Select)
 
 
-class CarnetForm(forms.ModelForm):
+class ConstantesForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(CarnetForm,self).__init__(*args, **kwargs)
-        carnets = [c.patient.code_patient for c in Carnet.objects.all()]
+    '''def __init__(self, *args, **kwargs):
+        super(ConstantesForm,self).__init__(*args, **kwargs)
+        carnets = [c.patient.code_patient for c in Constantes.objects.all()]
         patients = Patient.objects.filter(~Q(code_patient__in=carnets))
-        self.fields['patient'].queryset = patients
+        self.fields['patient'].queryset = patients'''
 
     temperature = TemperatureField(label=("Température"))
     pouls = PulseField(label=("Pouls"))
@@ -201,8 +209,8 @@ class CarnetForm(forms.ModelForm):
     tension_diastolique=tensionDiastoliqueField(label=("tension arterielle"))
     
     class Meta:
-        model = Carnet
-        fields = '__all__'
+        model = Constantes
+        fields = ['masse','tension_systolique','tension_diastolique','temperature','pouls','antecedents_medicaux','allergies_et_intolerance','fumeur','alcool']
 
     widgets = {
             'masse': forms.NumberInput(attrs={'min': 0.5}),
@@ -210,6 +218,7 @@ class CarnetForm(forms.ModelForm):
             'tension_systolique': forms.NumberInput(attrs={'min': 50}),
             'tension_diastolique': forms.NumberInput(attrs={'min': 30}),
             'pouls': forms.NumberInput(attrs={'min': 50}),
+             'carnet': forms.HiddenInput(),
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -222,21 +231,6 @@ class CarnetForm(forms.ModelForm):
 
 
 
-
-
-
-class ConsultationForm(forms.ModelForm):
-    class Meta:
-        model = Consultation
-        fields = ['patient', 'medecin']
-
-    def __init__(self, *args, **kwargs):
-         super().__init__(*args, **kwargs)
-         self.fields['patient'].widget = forms.HiddenInput()  # Champ caché pour le patient
-         self.fields['medecin'].widget = forms.HiddenInput() 
-        
-
-
 class DiagnosticForm(forms.ModelForm):
     class Meta:
         model = Diagnostic
@@ -244,22 +238,36 @@ class DiagnosticForm(forms.ModelForm):
 
 
 
+
 class TraitementForm(forms.ModelForm):
     class Meta:
         model = Traitement
-        fields = ['medicament','posologie', 'date_debut', 'date_fin']
-        widget = {
-            "medicament": forms.TextInput(attrs={'name':'medicament[]', 'value':''}),
-            "posologie" : forms.TextInput(attrs={'name':'posologie[]', 'value':''}), 
-            "date_debut" : forms.TextInput(attrs={'name':'date_debut[]', 'value':''}),
-            "date_fin" : forms.TextInput(attrs={'name':'date_fin[]', 'value':''}),
-        }
-
-# DiagnosticFormSet = forms.modelformset_factory(Diagnostic, form=DiagnosticForm, extra=1)
-# TraitementFormSet = forms.modelformset_factory(Traitement, form=TraitementForm, extra=1)
+        fields = ['date_debut', 'date_fin']
 
 
 
+class MedicamentForm(forms.ModelForm):
+    class Meta:
+        model = Medicament
+        fields = ['nom_medicament', 'dosage', 'forme']
+
+
+
+
+
+
+
+
+
+
+
+class SymptomeForm(forms.ModelForm):
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'required':'required'}))
+
+    class Meta:
+        model = Symptome
+        fields = ['description']
+        
 
 
 

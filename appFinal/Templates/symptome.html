@@ -1,0 +1,80 @@
+{% extends 'base_medecin.html' %}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+{% block content %}
+
+
+<h3>nouvelle Consultation pour {{ patient.nom }} {{ patient.prenom }}</h3>
+{% if alert %}
+    <div style="background-color: lightgreen; padding: 10px; text-align: center;">{{alert}}</div>
+{% endif %}
+
+<style>
+    .Symptome{
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 4px;
+    }
+    #symptome{
+        background: #f9f9f9;
+        padding: 20px;
+        margin: 0 0 0 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 5px;
+    }
+    #dernier_symptome{
+        align-items: center;
+    }
+    a{
+        text-decoration: none;
+    }
+    #btnDiagnostique{
+        padding: 5em 0 0 6em;
+        border-radius: 5px;
+    }
+    #btnDiagnostique a{
+        background-color: green;
+        color: #FFF;
+        padding: 10px;
+    }
+</style>
+<section id="symptome">
+    <div>
+        <form method="post" class="Symptome">
+            {% csrf_token %}
+            <div>
+                <label for="">Symptome(s)</label><br>
+                {{ symptomeForm.description }}
+            </div>
+            
+            <button type="submit">Enregistrer</button>
+        </form>
+    </div>
+    <div id="dernier_symptome">
+        {% if symptome %}
+            {% for symp in symptome %}
+                <div>{{symp}}</div>
+                <br>
+            {% endfor %}
+            <div id="btnDiagnostique">
+                <a href="{% url 'diagnostique' consultation.id %}">Diagnostique</a>
+            </div>
+            
+        {% else %}
+            <div>Aucun symptome ajouter durant cette consultation</div>
+        {% endif %}
+    </div>
+    
+
+</section>
+
+
+
+{% endblock %}

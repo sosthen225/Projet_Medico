@@ -12,30 +12,166 @@
 {% if alert %}
     <div style="background-color: lightgreen; padding: 10px; text-align: center;">{{alert}}</div>
 {% endif %}
-<form method="post" class="bg-danger">
-    {% csrf_token %}
-    {{ consultation_form.as_p }}
+
+<style>
+    .Symptome{
+        
+        padding: 0px;
+        border-radius: 4px;
+        width: 115%;
+    }
+    #diagnostic{
+        background: #f9f9f9;
+        padding: 20px;
+        margin: 0 0 0 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 5px;
+    }
     
-    <h3>Diagnostics</h3>
-    <div id="diagnostics">
-        <div class="diagnostic-form">
-            <div style="width: 100%;">
-                <label for="">Maladie</label><br>
-                {{ diagnostic_formset.maladie }}
-            </div>
-        </div>
+    a{
+        text-decoration: none;
+    }
+    #btnDiagnostique{
+        padding: 5em 0 0 6em;
+        border-radius: 5px;
+    }
+    #btnDiagnostique a{
+        background-color: green;
+        color: #FFF;
+        padding: 10px;
+    }
+    .maladie_traitement{
+        display: flex;
+        
+        padding: 10px;
+    }
+    .maladies_all{
+        border: 1px solid #ccc;
+    }
+    .traitement{
+        display: grid;
+        grid-row: 3;
+    }
+    .traitement_medicament{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+
+        padding: 10px;
+    }
+    .medicaments{
+        border: 1px solid #ccc;
+    }
+    .medoc{
+        width: 168px;
+    }
+    .autre_medoc{
+        margin: 10px 0 2px 0 ;
+    }
+    .autre_medoc button{
+        color: #FFF;
+        background-color: rgb(55, 55, 189);
+        padding: 5px;
+        border-radius: 3px;
+        border: none;
+       
+        right: 0;
+    }
+    #btn{
+        margin-top: 20px;
+    }
+    .aaa{
+        display: grid;
+        grid-row: 2;
+    }
+    .supprimer{
+        border: 1px solid red;
+        background-color: #FFF;
+        border-radius: 3px;
+        color: red;
+        margin-top: 4px;
+    }
+</style>
+<section id="diagnostic">
+    <div>
+        <form method="post" class="Symptome">
+            {% csrf_token %}
+            <div class="maladies_all">
+                <div class="maladie_traitement">
+                    <div>
+                        <label for="">Maladie</label>
+                        <input type="text" name="maladie">
+                    </div>
+                    
+                    <div class="traitement">
+                        <div><span>Traitement</span></div>
+                        <div class="medicaments">
+                            <div class="traitement_medicament">
+                                <div>
+                                    <label for="medicament">Médicament</label>
+                                    <input type="text" class="medoc" id="medicament" name="medicament" placeholder="Nom du médicament">
+                                </div>
+                                <div>
+                                    <label for="dosage">Dosage</label>
+                                    <input type="text" class="medoc" id="dosage" name="dosage" placeholder="Dosage du médicament">
+                                </div>
+                                <div>
+                                    <label for="forme">Forme</label><br>
+
+                                    <select name="forme" class="medoc" id="forme">
+                                        <option value="Comprimé">Comprimé</option>
+                                        <option value="Sirop">Sirop</option>
+                                        <option value="Gélule">Gélule</option>
+                                        <option value="Injection">Injection</option>
+                                        <option value="Poudre">Poudre</option>
+                                        <option value="Solution">Solution</option>
+                                        <option value="Suspension">Suspension</option>
+                                        <option value="Crème">Crème</option>
+                                        <option value="Onguent">Onguent</option>
+                                        <option value="Suppositoire">Suppositoire</option>
+                                        <option value="Ovule">Ovule</option>
+                                        <option value="Patch transdermique">Patch transdermique</option>
+                                        <option value="Aérosol">Aérosol</option>
+                                        <option value="Inhalateur">Inhalateur</option>
+                                        <option value="Gouttes auriculaires">Gouttes auriculaires</option>
+                                        <option value="Gouttes nasales">Gouttes nasales</option>
+                                        <option value="Granules">Granules</option>
+                                        <option value="Pastille">Pastille</option>
+                                        <option value="Elixir">Elixir</option>
+                                        <option value="Emulsion">Emulsion</option>
+                                        <option value="Gel">Gel</option>
+                                        <option value="Lozenge">Lozenge</option>
+                                        <option value="Bain de bouche">Bain de bouche</option>
+                                    </select>
+                                
+                                </div>
+                                <div>
+                                    <label for="posologie">Posologie</label>
+                                    <input type="text" id="posologie" class="medoc" name="posologie" placeholder="Posologie du médicament">
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="autre_medoc"><button type="button" onclick="nouveauMedicament(num='')">medicament + </button></div>
+                    </div>
+                    <!-- fin -->
+                </div>
+                
+                
+            </div><!-- maladies_all -->
+
+
+            <div><button type="button" onclick="nvMaladie()" id="nouvelleMaladie">maladie +</button></div>
+            <button type="submit" id="btn">Enregistrer</button>
+        </form>
     </div>
     
-    <h3>Traitements</h3>
-    <div id="traitements">
-        <div class="traitement-form" style="border: 1px solid #333; padding: 10px; margin-bottom: 5px;">
-            {{ traitement_formset.as_p }}
-        </div>
-    </div>
-    <button type="button" id="add-traitement">Ajouter un traitement</button><br><br>
     
-    <button type="submit">Enregistrer</button>
-</form>
+
+</section>
+
 
 <div id="prototype" style="display: none;">
     <div class="traitement-form" style="border: 1px solid #333; padding: 10px; margin-bottom: 5px;">
@@ -64,6 +200,134 @@
         parent.appendChild(nouveauElement);
     });
 </script>
+
+<script>
+    function nvMaladie() {
+        let conteneurMaladie = document.querySelector('.maladies_all');
+        let nombreMaladie = document.querySelectorAll('.maladie_traitement').length;
+
+        let nveDiv = document.createElement('div');
+        nveDiv.classList.add('maladie_traitement', `maladie_traitement${nombreMaladie + 1}`);
+        nveDiv.innerHTML = `
+            <div>
+                <label for="maladie${nombreMaladie + 1}">Maladie</label>
+                <input type="text" name="maladie${nombreMaladie + 1}" id="maladie${nombreMaladie + 1}">
+            </div>
+            <div class="traitement">
+                <div><span>Traitement</span></div>
+                <div class="medicaments medicaments${nombreMaladie + 1}">
+                    <div class="traitement_medicament">
+                        <div>
+                            <label for="medicament${nombreMaladie + 1}">Médicament</label>
+                            <input type="text" class="medoc" id="medicament${nombreMaladie + 1}" name="medicament${nombreMaladie + 1}" placeholder="Nom du médicament">
+                        </div>
+                        <div>
+                            <label for="dosage${nombreMaladie + 1}">Dosage</label>
+                            <input type="text" class="medoc" id="dosage${nombreMaladie + 1}" name="dosage${nombreMaladie + 1}" placeholder="Dosage du médicament">
+                        </div>
+                        <div>
+                            <label for="forme${nombreMaladie + 1}">Forme</label><br>
+                            <select name="forme${nombreMaladie + 1}" class="medoc" id="forme${nombreMaladie + 1}">
+                                <option value="Comprimé">Comprimé</option>
+                                <option value="Sirop">Sirop</option>
+                                <option value="Gélule">Gélule</option>
+                                <option value="Injection">Injection</option>
+                                <option value="Poudre">Poudre</option>
+                                <option value="Solution">Solution</option>
+                                <option value="Suspension">Suspension</option>
+                                <option value="Crème">Crème</option>
+                                <option value="Onguent">Onguent</option>
+                                <option value="Suppositoire">Suppositoire</option>
+                                <option value="Ovule">Ovule</option>
+                                <option value="Patch transdermique">Patch transdermique</option>
+                                <option value="Aérosol">Aérosol</option>
+                                <option value="Inhalateur">Inhalateur</option>
+                                <option value="Gouttes auriculaires">Gouttes auriculaires</option>
+                                <option value="Gouttes nasales">Gouttes nasales</option>
+                                <option value="Granules">Granules</option>
+                                <option value="Pastille">Pastille</option>
+                                <option value="Elixir">Elixir</option>
+                                <option value="Emulsion">Emulsion</option>
+                                <option value="Gel">Gel</option>
+                                <option value="Lozenge">Lozenge</option>
+                                <option value="Bain de bouche">Bain de bouche</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="posologie${nombreMaladie + 1}">Posologie</label>
+                            <input type="text" id="posologie${nombreMaladie + 1}" class="medoc" name="posologie${nombreMaladie + 1}" placeholder="Posologie du médicament">
+                        </div>
+                    </div>
+                </div>
+                <div class="autre_medoc"><button type="button" onclick="nouveauMedicament(${nombreMaladie + 1})">médicament + </button></div>
+            </div>
+        `;
+        conteneurMaladie.appendChild(nveDiv);
+    }
+
+    function nouveauMedicament(num = 0) {
+        let conteneurs = document.querySelector(`.medicaments`);
+        if (num != 0) {
+            conteneurs = document.querySelector(`.medicaments${num}`);
+        }
+
+        let nvDiv = document.createElement('div');
+        nvDiv.classList.add('traitement_medicament');
+        let nombreMedicament = conteneurs.querySelectorAll('.traitement_medicament').length;
+        nvDiv.innerHTML = `
+            <div>
+                <label for="medicament${num}_${nombreMedicament + 1}">Médicament</label>
+                <input type="text" class="medoc" id="medicament${num}_${nombreMedicament + 1}" name="medicament${num}_${nombreMedicament + 1}" placeholder="Nom du médicament">
+            </div>
+            <div>
+                <label for="dosage${num}_${nombreMedicament + 1}">Dosage</label>
+                <input type="text" class="medoc" id="dosage${num}_${nombreMedicament + 1}" name="dosage${num}_${nombreMedicament + 1}" placeholder="Dosage du médicament">
+            </div>
+            <div>
+                <label for="forme${num}_${nombreMedicament + 1}">Forme</label><br>
+                <select name="forme${num}_${nombreMedicament + 1}" class="medoc" id="forme${num}_${nombreMedicament + 1}">
+                    <option value="Comprimé">Comprimé</option>
+                    <option value="Sirop">Sirop</option>
+                    <option value="Gélule">Gélule</option>
+                    <option value="Injection">Injection</option>
+                    <option value="Poudre">Poudre</option>
+                    <option value="Solution">Solution</option>
+                    <option value="Suspension">Suspension</option>
+                    <option value="Crème">Crème</option>
+                    <option value="Onguent">Onguent</option>
+                    <option value="Suppositoire">Suppositoire</option>
+                    <option value="Ovule">Ovule</option>
+                    <option value="Patch transdermique">Patch transdermique</option>
+                    <option value="Aérosol">Aérosol</option>
+                    <option value="Inhalateur">Inhalateur</option>
+                    <option value="Gouttes auriculaires">Gouttes auriculaires</option>
+                    <option value="Gouttes nasales">Gouttes nasales</option>
+                    <option value="Granules">Granules</option>
+                    <option value="Pastille">Pastille</option>
+                    <option value="Elixir">Elixir</option>
+                    <option value="Emulsion">Emulsion</option>
+                    <option value="Gel">Gel</option>
+                    <option value="Lozenge">Lozenge</option>
+                    <option value="Bain de bouche">Bain de bouche</option>
+                </select>
+            </div>
+            <div>
+                <label for="posologie${num}_${nombreMedicament + 1}">Posologie</label>
+                <input type="text" id="posologie${num}_${nombreMedicament + 1}" class="medoc" name="posologie${num}_${nombreMedicament + 1}" placeholder="Posologie du médicament">
+            </div>
+            <div>
+                <button onclick="supprimer(this)" class="supprimer" type="button">supprimer</button>
+            </div>
+        `;
+        conteneurs.appendChild(nvDiv);
+    }
+
+    function supprimer(button) {
+        button.parentElement.parentElement.remove();
+    }
+</script>
+
+
 
 
 

@@ -3,7 +3,36 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
+
+
+
 # Create your models here.
+FORMES_CHOICES = [
+        ('comprime', 'Comprimé'),
+        ('sirop', 'Sirop'),
+        ('gelule', 'Gélule'),
+        ('injection', 'Injection'),
+        ('poudre', 'Poudre'),
+        ('solution', 'Solution'),
+        ('suspension', 'Suspension'),
+        ('creme', 'Crème'),
+        ('onguent', 'Onguent'),
+        ('suppositoire', 'Suppositoire'),
+        ('ovule', 'Ovule'),
+        ('patch_transdermique', 'Patch transdermique'),
+        ('aerosol', 'Aérosol'),
+        ('inhalateur', 'Inhalateur'),
+        ('collyre', 'Collyre'),
+        ('gouttes_auriculaires', 'Gouttes auriculaires'),
+        ('gouttes_nasales', 'Gouttes nasales'),
+        ('granules', 'Granules'),
+        ('pastille', 'Pastille'),
+        ('elixir', 'Elixir'),
+        ('emulsion', 'Emulsion'),
+        ('gel', 'Gel'),
+        ('lozenge', 'Lozenge'),
+        ('bain_de_bouche', 'Bain de bouche'),
+    ]
 
 choix_communes = [
     ('Aboisso', 'Aboisso'),
@@ -90,27 +119,53 @@ choix_communes = [
     ('Zatié', 'Zatié'),
     ('Zinguinéo', 'Zinguinéo')
 ]
+
+
 choix_communes= sorted(choix_communes, key=lambda x: x[1])
 
-CHOIX_SPECIALITES = [
-    ('cardiologue', 'Cardiologue'),
-    ('dentiste', 'Dentiste'),
-    ('dermatologue', 'Dermatologue'),
-    ('généraliste', 'Généraliste'),
-    ('gynécologue', 'Gynécologue'),
-    ('neurologue', 'Neurologue'),
-    ('pediatre', 'Pédiatre'),
-    ('psychiatre', 'Psychiatre'),
-    ('psychologue', 'Psychologue'),
-    ('ophtamologue', 'Ophtamologue'),
+BLOOD_TYPE_CHOICES = [
+    ('A+', 'A positif'),
+    ('A-', 'A négatif'),
+    ('B+', 'B positif'),
+    ('B-', 'B négatif'),
+    ('AB+', 'AB positif'),
+    ('AB-', 'AB négatif'),
+    ('O+', 'O positif'),
+    ('O-', 'O négatif'),
 ]
 
-CHOIX_SPECIALITES = sorted(CHOIX_SPECIALITES, key=lambda x: x[1])
+
+# CHOIX_SPECIALITES = [
+#     ('cardiologue', 'Cardiologue'),
+#     ('dentiste', 'Dentiste'),
+#     ('dermatologue', 'Dermatologue'),
+#     ('généraliste', 'Généraliste'),
+#     ('gynécologue', 'Gynécologue'),
+#     ('neurologue', 'Neurologue'),
+#     ('pediatre', 'Pédiatre'),
+#     ('psychiatre', 'Psychiatre'),
+#     ('psychologue', 'Psychologue'),
+#     ('ophtamologue', 'Ophtamologue'),
+# ]
+
+
+
+# CHOIX_SPECIALITES = sorted(CHOIX_SPECIALITES, key=lambda x: x[1])
+
+
 genre=[('M', 'Masculin'), ('F', 'Féminin')]
 
 
-# voici mes models
+                   # voici mes models
   
+
+
+
+class Specialite(models.Model):
+    libelle= models.CharField(max_length=200)
+
+    def __str__(self) -> str:
+        return self.libelle
 
   # Modèle Medecin
 
@@ -119,7 +174,7 @@ class Medecin(models.Model):
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
     genre = models.CharField(max_length=1, choices=genre )
-    specialite = models.CharField(max_length=100, choices=CHOIX_SPECIALITES)
+    specialite = models.ForeignKey(Specialite , on_delete=models.CASCADE)
     telephone = models.CharField(max_length=10, unique=True)
     
 
@@ -152,6 +207,7 @@ class Patient(models.Model):
     genre = models.CharField(max_length=1, choices=genre)
     adresse = models.CharField(max_length=200 , choices=choix_communes)
     telephone = models.CharField(max_length=10, unique=True)
+    groupe_sanguin=models.CharField(max_length=3,blank=True, choices=BLOOD_TYPE_CHOICES)
     infirmier =models.ForeignKey(Infirmier, on_delete=models.CASCADE)
 
     def nom_upper(self):
@@ -194,70 +250,106 @@ class Patient(models.Model):
 
 
 
-
   # Modèle Carnet
-BLOOD_TYPE_CHOICES = [
-    ('A+', 'A positif'),
-    ('A-', 'A négatif'),
-    ('B+', 'B positif'),
-    ('B-', 'B négatif'),
-    ('AB+', 'AB positif'),
-    ('AB-', 'AB négatif'),
-    ('O+', 'O positif'),
-    ('O-', 'O négatif'),
-]
+
 class Carnet(models.Model):
     patient = models.OneToOneField(Patient, on_delete=models.CASCADE)
-    masse = models.FloatField(verbose_name="masse (kg)" , validators=[MinValueValidator(+0.5)])
-    tension_systolique = models.IntegerField(verbose_name="Tension systolique (mmHg)",validators=[MinValueValidator(50)])
-    tension_diastolique = models.IntegerField(verbose_name="Tension diastolique (mmHg)",validators=[MinValueValidator(30)])
-    temperature = models.DecimalField(max_digits=5,decimal_places=2,verbose_name="Température (°C)",validators=[MinValueValidator(32)])
-    pouls = models.IntegerField(verbose_name="Pouls (bpm)", validators=[MinValueValidator(+50)] )
-    antecedents_medicaux = models.TextField(blank=True, null=True)
-    allergies_et_intolerance = models.TextField(blank=True, null=True)
-    groupe_sanguin=models.CharField(max_length=3, choices=BLOOD_TYPE_CHOICES)
-    fumeur = models.CharField(max_length=3,choices=[('OUI','Oui'), ('NON', 'Non')])
-    alcool = models.CharField(max_length=3,choices=[('OUI','Oui'), ('NON', 'Non')])
     date_creation = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Carnet de {self.patient}'
     
 
+     # Modèle constantes
+class Constantes(models.Model):
+    carnet= models.ForeignKey(Carnet, on_delete=models.CASCADE)
+    masse = models.FloatField(verbose_name="masse (kg)" , validators=[MinValueValidator(+0.5)])
+    tension_systolique = models.IntegerField(verbose_name="Tension systolique (mmHg)",validators=[MinValueValidator(50)])
+    tension_diastolique = models.IntegerField(verbose_name="Tension diastolique (mmHg)",validators=[MinValueValidator(30)])
+    temperature = models.FloatField(verbose_name="Température (°C)",validators=[MinValueValidator(32)])
+    pouls = models.IntegerField(verbose_name="Pouls (bpm)", validators=[MinValueValidator(+50)] )
+    antecedents_medicaux = models.TextField(blank=True, null=True)
+    allergies_et_intolerance = models.TextField(blank=True, null=True)    
+    fumeur = models.CharField(max_length=3,choices=[('OUI','Oui'), ('NON', 'Non')])
+    alcool = models.CharField(max_length=3,choices=[('OUI','Oui'), ('NON', 'Non')])  
+    date = models.DateTimeField(auto_now_add=True)
+      
+    def __str__(self):
+        return f'Constantes de {self.carnet.patient.nom} - {self.date}'
+
 
     # Modèle Consultation
 
 class Consultation(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    medecin =models.ForeignKey(Medecin, on_delete=models.CASCADE)
+    medecin =models.ForeignKey(Medecin, on_delete=models.CASCADE, blank=True)
+    constantes = models.ForeignKey(Constantes,on_delete=models.CASCADE)
+    statut = models.CharField(max_length=50, choices=[('En attente', 'En attente'), ('En cours', 'En cours'), ('Terminée', 'Terminée'), ('Annulée', 'Annulée')], default='En attente')
     date_consultation = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Consultation de {self.patient} par {self.medecin} le {self.date_consultation}'
 
 
+# model symptome
+class Symptome(models.Model):
+    consultation = models.ForeignKey(Consultation, on_delete=models.CASCADE)
+    description = models.TextField()
+
+    def __str__(self):
+        return f'Symptôme de {self.consultation.patient.nom}'
+    
 
 
-  # Modèle Diagnostic
+class Medicament(models.Model):
+    nom_medicament = models.CharField(max_length=100)
+    forme = models.CharField(max_length=20, choices=FORMES_CHOICES)
+    dosage = models.CharField(max_length=255, blank=True)
+    posologie = models.CharField(max_length=255)
+    def __str__(self):
+        return f'{self.nom_medicament} ({self.forme})'
+    
+
+
+
+class Maladie(models.Model):
+    medicament=models.ForeignKey(Medicament, on_delete=models.CASCADE)
+    nom = models.CharField(max_length=100)
+    
+
+    def __str__(self):
+        return self.nom
+    
+
+
 
 class Diagnostic(models.Model):
     consultation = models.ForeignKey(Consultation, on_delete=models.CASCADE)
-    maladie = models.CharField(max_length=255)
+    maladie = models.ForeignKey(Maladie, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'Diagnostic de {self.consultation.patient}: {self.maladie}'
     
 
 
-    # Modèle Traitement
-  
+
 class Traitement(models.Model):
     diagnostic = models.ForeignKey(Diagnostic, on_delete=models.CASCADE)
-    medicament = models.CharField(max_length=255)
-    posologie = models.CharField(max_length=255)
+    medicaments = models.ForeignKey(Medicament,on_delete=models.CASCADE )
     date_debut = models.DateField(default=datetime.date.today)
     date_fin = models.DateField()
 
     def __str__(self):
-        return f'Traitement: {self.medicament} ({self.date_debut} - {self.date_fin})'
+        return f'Traitement du diagnostic {self.diagnostic}'
 
+
+
+
+# class TraitementMedicament(models.Model):
+#     traitement = models.ForeignKey(Traitement, on_delete=models.CASCADE)
+#     medicament = models.ForeignKey(Medicament, on_delete=models.CASCADE)
+#     posologie = models.CharField(max_length=255)
+
+#     def __str__(self):
+#         return f'{self.traitement} - {self.medicament} : {self.posologie}'
+        

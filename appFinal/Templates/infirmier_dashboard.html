@@ -1,11 +1,78 @@
-
 {% extends 'base_infirmier.html' %}
 
 {% block title %}Tableau de Bord Infirmier{% endblock %}
 
-{% block header %}Bienvenue sur le gestionnaire de carnet, infirmier(e) {{ infirmier.nom }} {% endblock %}
+{% block header %}      Bienvenue sur le gestionnaire de carnet, infirmier(e) {{ infirmier.nom | upper }}{% endblock %}
 
 {% block content %}
     <h2>Tableau de Bord Infirmier</h2>
     <p>Utilisez le menu pour naviguer.</p>
+    
+    <div class="instructions">
+        <h3>Instructions rapides :</h3>
+        <ul>
+            <li>Pour voir la liste de vos patients, cliquez sur "Liste des Patients" dans le menu.</li>
+            <li>Pour enregistrer une nouvelle consultation, utilisez l'option "Nouveau Patient".</li>
+            <li>Pour consulter les consultations prévues aujourd'hui, cliquez sur "Consultations du jour".</li>
+            <li>Accédez à toutes les consultations enregistrées en utilisant "Toutes les Consultations".</li>
+            <li>N'oubliez pas de vous déconnecter après avoir terminé votre session en cliquant sur "Se Déconnecter".</li>
+        </ul>
+    </div>
+    
+    <div class="alerts">
+        <h3>Rappel :</h3>
+        <p>N'oubliez pas de mettre à jour régulièrement les dossiers des patients pour assurer un suivi efficace de leur santé.</p>
+    </div>
+    
+    <div class="resources">
+        <h3>Ressources Utiles :</h3>
+        <ul>
+            <li><a href="#">Guide des procédures pour les consultations</a></li>
+            <li><a href="#">Protocoles de traitement pour certaines affections courantes</a></li>
+        </ul>
+    </div>
+
+
+
+    <style>.instructions,
+        .alerts,
+        .resources {
+            background-color: #f2f2f2; /* Couleur de fond */
+            padding: 20px; /* Espacement intérieur */
+            margin-bottom: 20px; /* Marge en bas */
+            border: 1px solid #e0e0e0; /* Bordure légère */
+            border-radius: 5px; /* Coins arrondis */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre douce */
+        }
+        
+        /* Titres des sections */
+        .instructions h3,
+        .alerts h3,
+        .resources h3 {
+            color: #333; /* Couleur du texte */
+            font-size: 18px; /* Taille de police */
+            margin-top: 0; /* Supprime la marge supérieure */
+        }
+        
+        /* Liste à puces et liens */
+        .instructions ul,
+        .alerts p,
+        .resources ul {
+            margin-top: 10px; /* Espacement par rapport au titre */
+        }
+        
+        .instructions li,
+        .alerts li,
+        .resources li {
+            margin-bottom: 5px; /* Espacement entre les éléments de liste */
+        }
+        
+        .resources a {
+            color: #007bff; /* Couleur du lien */
+            text-decoration: none; /* Supprime soulignage par défaut */
+        }
+        
+        .resources a:hover {
+            text-decoration: underline; /* Soulignage au survol */
+        }</style>
 {% endblock %}

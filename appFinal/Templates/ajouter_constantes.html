@@ -1,0 +1,14 @@
+{% extends 'base_infirmier.html' %}
+
+{% block content %}
+  <h2>Ajouter des constantes pour {{ patient.nom }} {{ patient.prenom }}</h2>
+  
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <button type="submit">Enregistrer</button>
+  </form>
+  
+  <a href="{% url 'voir_carnet' patient.id %}">Retour au carnet de santé</a>
+{% endblock %}

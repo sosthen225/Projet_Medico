@@ -15,9 +15,13 @@
         </header>
         <nav>
             <br><br><br><br><br> <a href="{% url 'medecin_dashboard' %}">Tableau de Bord</a><br>
-            <a href= "{% url 'rechercher_patient'%}">faire une consultation</a><br>
-            <a href=" {% url 'liste_consultation' %}"> liste de mes consultations</a><br><br><br><br><br><br><br><br><br><br>
-            <a href="{% url 'logout' %}">Se Déconnecter</a>
+           <a href=" {% url 'consultations en attente' %}"> Consultations en attente
+            {% if nombre_consultations_en_attente > 0 %}
+                ({{ nombre_consultations_en_attente }})
+            {% endif %}</a><br><br><br><br><br><br><br><br><br>
+           <a href= "{% url 'rechercher_patient'%}">rechercher un dossier</a><br>
+           <a href=" {% url 'liste_consultation' %}"> liste de mes consultations</a><br>
+           <a href="{% url 'logout' %}">Se Déconnecter</a>
         </nav>
         <main>
             {% block content %}{% endblock %}
